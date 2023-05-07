@@ -1,0 +1,19 @@
+.header {
+    background-color: #1C1C21;
+    display: flex;
+}
+
+.content {
+    align-items: center;
+    display: flex;
+    margin: 16px auto;
+    width: 1280px;
+}
+
+.logo {
+    margin: 0 auto;
+}
+
+.account:hover {
+    opacity: .8;
+}

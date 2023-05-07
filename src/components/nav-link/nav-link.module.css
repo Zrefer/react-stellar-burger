@@ -1,0 +1,14 @@
+.nav-link {
+    display: flex;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.nav-link_inactive {
+    cursor: pointer;
+    transition: opacity .2s ease;
+}
+
+.nav-link_inactive:hover {
+    opacity: .8;
+}
