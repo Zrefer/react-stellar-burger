@@ -11,7 +11,7 @@ class HeaderMenu extends React.PureComponent {
     return (
       <nav>
         <ul className={styles.menu}>
-          <li className={styles.menu__item}>
+          <li className={`mr-2 ${styles.menu__item}`}>
             <NavLink active={true}>
               <BurgerIcon type="primary" />
               Конструктор

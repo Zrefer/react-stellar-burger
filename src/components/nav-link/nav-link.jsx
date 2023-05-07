@@ -10,8 +10,9 @@ class NavLink extends React.PureComponent {
       <a
         href={this.props.link}
         className={`text_type_main-default ${styles["nav-link"]} ${
-          !this.props.active &&
-          `${styles["nav-link_inactive"]} text_color_inactive`
+          this.props.active
+            ? "text_color_primary"
+            : `{styles["nav-link_inactive"]} text_color_inactive`
         }`}
       >
         {this.props.children}

@@ -11,7 +11,7 @@ class AppHeader extends React.PureComponent {
   render() {
     return (
       <header className={styles.header}>
-        <div className={styles.content}>
+        <div className={`mt-4 mb-4 ${styles.content}`}>
           <HeaderMenu />
           <div className={styles.logo}>
             <Logo />
