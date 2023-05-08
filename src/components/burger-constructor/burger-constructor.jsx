@@ -12,15 +12,20 @@ class BurgerConstructor extends React.PureComponent {
     super(props);
     this.ingredientsListRef = React.createRef();
     this.bottomIngredientRef = React.createRef();
+    this.controlsRef = React.createRef();
   }
 
   updateListHeight = () => {
     const bottomElement = this.bottomIngredientRef.current;
     const bottomElementRect = bottomElement.getBoundingClientRect();
-    const bottomOffset = document.body.scrollHeight - bottomElementRect.y + 68;
+
+    const controlsElement = this.controlsRef.current;
+    const controlsElementRect = controlsElement.getBoundingClientRect();
 
     const listElement = this.ingredientsListRef.current;
     const listElementRect = listElement.getBoundingClientRect();
+
+    const bottomOffset = controlsElementRect.bottom - bottomElementRect.y + 68;
     const targetHeight = window.innerHeight - listElementRect.y - bottomOffset;
 
     listElement.style.height = targetHeight + "px";
@@ -96,7 +101,7 @@ class BurgerConstructor extends React.PureComponent {
             {topBotElements.bot}
           </div>
         </div>
-        <div className={styles.controls}>
+        <div className={styles.controls} ref={this.controlsRef}>
           <div className={styles.price}>
             <p className="text text_type_digits-medium">{totalPrice}</p>
             <CurrencyIcon />
