@@ -9,7 +9,7 @@ class BurgerIngredients extends React.PureComponent {
     this.state = {
       currentTab: "bun",
     };
-    this.ingredientsElement = React.createRef();
+    this.ingredientsRef = React.createRef();
   }
 
   componentDidMount() {
@@ -22,7 +22,7 @@ class BurgerIngredients extends React.PureComponent {
   }
 
   updateSectionHeight = () => {
-    const element = this.ingredientsElement.current;
+    const element = this.ingredientsRef.current;
     const rect = element.getBoundingClientRect();
     const targetHeight = window.innerHeight - rect.y - 52;
     element.style.height = targetHeight + "px";
@@ -79,7 +79,7 @@ class BurgerIngredients extends React.PureComponent {
         </div>
         <div
           className={`${styles.ingredients} custom-scroll`}
-          ref={this.ingredientsElement}
+          ref={this.ingredientsRef}
         >
           <div className={styles.section}>
             <p
