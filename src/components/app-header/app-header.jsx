@@ -16,10 +16,12 @@ class AppHeader extends React.PureComponent {
           <div className={styles.logo}>
             <Logo />
           </div>
-          <NavLink>
-            <ProfileIcon type="secondary" />
-            Личный кабинет
-          </NavLink>
+          <div className={styles.account}>
+            <NavLink>
+              <ProfileIcon type="secondary" />
+              Личный кабинет
+            </NavLink>
+          </div>
         </div>
       </header>
     );

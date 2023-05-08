@@ -12,9 +12,10 @@
 }
 
 .logo {
-    margin: 0 auto;
+    margin-left: 112px;
+    margin-right: 289px;
 }
 
-.account:hover {
-    opacity: .8;
+.account {
+    padding: 16px 20px;
 }
