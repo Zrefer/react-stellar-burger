@@ -122,7 +122,7 @@ class BurgerConstructor extends React.PureComponent {
 }
 
 BurgerConstructor.propTypes = {
-  ingredients: PropTypes.arrayOf(ingredientPropType),
+  ingredients: PropTypes.arrayOf(ingredientPropType).isRequired,
 };
 
 export default BurgerConstructor;

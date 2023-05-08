@@ -31,7 +31,7 @@ class Ingredient extends React.PureComponent {
 }
 
 Ingredient.propTypes = {
-  ingredient: ingredientPropType,
+  ingredient: ingredientPropType.isRequired,
 };
 
 export default Ingredient;
