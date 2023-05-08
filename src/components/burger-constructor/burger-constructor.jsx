@@ -44,6 +44,7 @@ class BurgerConstructor extends React.PureComponent {
 
   createElements() {
     return this.props.ingredients.reduce((result, ingredient) => {
+      if (ingredient.type === "bun") return result;
       result.push(
         <li key={ingredient._id} className={styles["ingredient-item"]}>
           <DragIcon type="primary" />
@@ -64,22 +65,26 @@ class BurgerConstructor extends React.PureComponent {
     });
     return {
       top: (
-        <ConstructorElement
-          text={bunIngredient.name}
-          price={bunIngredient.price}
-          thumbnail={bunIngredient.image}
-          isLocked={true}
-          type="top"
-        />
+        <div className={styles.locked}>
+          <ConstructorElement
+            text={`${bunIngredient.name} (верх)`}
+            price={bunIngredient.price}
+            thumbnail={bunIngredient.image}
+            isLocked={true}
+            type="top"
+          />
+        </div>
       ),
       bot: (
-        <ConstructorElement
-          text={bunIngredient.name}
-          price={bunIngredient.price}
-          thumbnail={bunIngredient.image}
-          isLocked={true}
-          type="bottom"
-        />
+        <div className={styles.locked} ref={this.bottomIngredientRef}>
+          <ConstructorElement
+            text={`${bunIngredient.name} (низ)`}
+            price={bunIngredient.price}
+            thumbnail={bunIngredient.image}
+            isLocked={true}
+            type="bottom"
+          />
+        </div>
       ),
     };
   }
@@ -87,21 +92,20 @@ class BurgerConstructor extends React.PureComponent {
   render() {
     const topBotElements = this.createTopBotElements();
     const totalPrice = this.props.ingredients.reduce((result, ingredient) => {
+      if (ingredient.type === "bun") return result;
       return ingredient.price + result;
     }, 0);
     return (
       <section className={styles.main}>
         <div className={styles.ingredients}>
-          <div className={styles.locked}>{topBotElements.top}</div>
+          {topBotElements.top}
           <ul
             className={`${styles["ingredients-list"]} custom-scroll`}
             ref={this.ingredientsListRef}
           >
             {this.createElements()}
           </ul>
-          <div className={styles.locked} ref={this.bottomIngredientRef}>
-            {topBotElements.bot}
-          </div>
+          {topBotElements.bot}
         </div>
         <div className={styles.controls} ref={this.controlsRef}>
           <div className={styles.price}>
