@@ -45,7 +45,7 @@ class BurgerConstructor extends React.PureComponent {
   createElements() {
     return this.props.ingredients.reduce((result, ingredient) => {
       result.push(
-        <li key={ingredient.id} className={styles["ingredient-item"]}>
+        <li key={ingredient._id} className={styles["ingredient-item"]}>
           <DragIcon type="primary" />
           <ConstructorElement
             text={ingredient.name}
