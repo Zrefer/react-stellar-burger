@@ -4,6 +4,8 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import React from "react";
 import styles from "./ingredient.module.css";
+import { ingredientPropType } from "../../utils/prop-types";
+import PropTypes from "prop-types";
 
 class Ingredient extends React.PureComponent {
   render() {
@@ -27,5 +29,9 @@ class Ingredient extends React.PureComponent {
     );
   }
 }
+
+Ingredient.propTypes = {
+  ingredient: ingredientPropType,
+};
 
 export default Ingredient;

@@ -6,6 +6,8 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import React from "react";
 import styles from "./burger-constructor.module.css";
+import PropTypes from "prop-types";
+import { ingredientPropType } from "../../utils/prop-types";
 
 class BurgerConstructor extends React.PureComponent {
   constructor(props) {
@@ -114,5 +116,9 @@ class BurgerConstructor extends React.PureComponent {
     );
   }
 }
+
+BurgerConstructor.propTypes = {
+  ingredients: PropTypes.arrayOf(ingredientPropType),
+};
 
 export default BurgerConstructor;
