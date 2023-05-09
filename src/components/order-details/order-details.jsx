@@ -1,4 +1,5 @@
 import styles from "./order-details.module.css";
+import PropTypes from "prop-types";
 
 function OrderDetails({ orderNum }) {
   return (
@@ -21,5 +22,9 @@ function OrderDetails({ orderNum }) {
     </div>
   );
 }
+
+OrderDetails.propTypes = {
+  orderNum: PropTypes.number.isRequired,
+};
 
 export default OrderDetails;
