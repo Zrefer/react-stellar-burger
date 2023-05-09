@@ -1,9 +1,20 @@
 import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./modal.module.css";
 import PropTypes from "prop-types";
+import React from "react";
 
 function Modal({ title, onClose, children }) {
   const handleCloseClick = () => onClose();
+
+  React.useEffect(() => {
+    const handleEscClose = (evt) => {
+      if (evt.key !== "Escape") return;
+      onClose();
+    };
+
+    document.addEventListener("keydown", handleEscClose);
+    return () => document.removeEventListener("keydown", handleEscClose);
+  }, [onClose]);
 
   return (
     <div className={styles.container}>

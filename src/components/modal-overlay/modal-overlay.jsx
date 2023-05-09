@@ -6,16 +6,6 @@ import PropTypes from "prop-types";
 function ModalOverlay({ onClose, children }) {
   const overlayRef = React.useRef();
 
-  React.useEffect(() => {
-    const handleEscClose = (evt) => {
-      if (evt.key !== "Escape") return;
-      onClose();
-    };
-
-    document.addEventListener("keydown", handleEscClose);
-    return () => document.removeEventListener("keydown", handleEscClose);
-  }, [onClose]);
-
   const handleClickClose = (evt) => {
     if (evt.target !== overlayRef.current) return;
     onClose();
