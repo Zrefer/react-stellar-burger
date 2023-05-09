@@ -1,17 +1,17 @@
 import styles from "./nav-link.module.css";
 import PropTypes from "prop-types";
 
-function NavLink(props) {
+function NavLink({ link, active, children }) {
   return (
     <a
-      href={props.link}
+      href={link}
       className={`text_type_main-default ${styles["nav-link"]} ${
-        props.active
+        active
           ? "text_color_primary"
           : `${styles["nav-link_inactive"]} text_color_inactive`
       }`}
     >
-      {props.children}
+      {children}
     </a>
   );
 }

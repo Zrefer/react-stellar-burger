@@ -12,7 +12,7 @@ import ModalOverlay from "../modal-overlay/modal-overlay";
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
 
-function BurgerConstructor(props) {
+function BurgerConstructor({ ingredients }) {
   const ingredientsListRef = React.useRef();
   const bottomIngredientRef = React.useRef();
   const controlsRef = React.useRef();
@@ -49,7 +49,7 @@ function BurgerConstructor(props) {
   };
 
   const createElements = () => {
-    return props.ingredients.reduce((result, ingredient) => {
+    return ingredients.reduce((result, ingredient) => {
       if (ingredient.type === "bun") return result;
       result.push(
         <li key={ingredient._id} className={styles["ingredient-item"]}>
@@ -66,7 +66,7 @@ function BurgerConstructor(props) {
   };
 
   const createTopBotElements = () => {
-    const bunIngredient = props.ingredients.find((ingredient) => {
+    const bunIngredient = ingredients.find((ingredient) => {
       return ingredient.type === "bun";
     });
     return {
@@ -96,7 +96,7 @@ function BurgerConstructor(props) {
   };
 
   const topBotElements = createTopBotElements();
-  const totalPrice = props.ingredients.reduce((result, ingredient) => {
+  const totalPrice = ingredients.reduce((result, ingredient) => {
     if (ingredient.type === "bun") return result;
     return ingredient.price + result;
   }, 0);

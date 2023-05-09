@@ -5,7 +5,7 @@ import Ingredient from "../ingredient/ingredient";
 import PropTypes from "prop-types";
 import { ingredientPropType } from "../../utils/prop-types";
 
-function BurgerIngredients(props) {
+function BurgerIngredients({ ingredients }) {
   const [currentTab, setTab] = React.useState("bun");
   const ingredientsRef = React.useRef();
 
@@ -26,7 +26,7 @@ function BurgerIngredients(props) {
   }, []);
 
   const createIngredients = (type) => {
-    return props.ingredients.reduce((result, ingredient) => {
+    return ingredients.reduce((result, ingredient) => {
       if (ingredient.type !== type) return result;
 
       result.push(
