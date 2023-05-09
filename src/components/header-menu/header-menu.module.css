@@ -1,0 +1,10 @@
+.menu {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu__item {
+    padding: 16px 20px;
+}
