@@ -8,11 +8,16 @@ import React from "react";
 import styles from "./burger-constructor.module.css";
 import PropTypes from "prop-types";
 import { ingredientPropType } from "../../utils/prop-types";
+import ModalOverlay from "../modal-overlay/modal-overlay";
+import Modal from "../modal/modal";
+import OrderDetails from "../order-details/order-details";
 
 function BurgerConstructor(props) {
   const ingredientsListRef = React.useRef();
   const bottomIngredientRef = React.useRef();
   const controlsRef = React.useRef();
+
+  const [detailsOpened, setDetailsOpened] = React.useState(false);
 
   const updateListHeight = () => {
     const bottomElement = bottomIngredientRef.current;
@@ -38,6 +43,10 @@ function BurgerConstructor(props) {
       window.removeEventListener("resize", updateListHeight);
     };
   }, []);
+
+  const handleCheckoutClick = () => {
+    setDetailsOpened(true);
+  };
 
   const createElements = () => {
     return props.ingredients.reduce((result, ingredient) => {
@@ -92,27 +101,41 @@ function BurgerConstructor(props) {
     return ingredient.price + result;
   }, 0);
   return (
-    <section className={styles.main}>
-      <div className={styles.ingredients}>
-        {topBotElements.top}
-        <ul
-          className={`${styles["ingredients-list"]} custom-scroll`}
-          ref={ingredientsListRef}
-        >
-          {createElements()}
-        </ul>
-        {topBotElements.bot}
-      </div>
-      <div className={styles.controls} ref={controlsRef}>
-        <div className={styles.price}>
-          <p className="text text_type_digits-medium">{totalPrice}</p>
-          <CurrencyIcon />
+    <>
+      <section className={styles.main}>
+        <div className={styles.ingredients}>
+          {topBotElements.top}
+          <ul
+            className={`${styles["ingredients-list"]} custom-scroll`}
+            ref={ingredientsListRef}
+          >
+            {createElements()}
+          </ul>
+          {topBotElements.bot}
         </div>
-        <Button htmlType="button" type="primary" size="large">
-          Оформить заказ
-        </Button>
-      </div>
-    </section>
+        <div className={styles.controls} ref={controlsRef}>
+          <div className={styles.price}>
+            <p className="text text_type_digits-medium">{totalPrice}</p>
+            <CurrencyIcon />
+          </div>
+          <Button
+            htmlType="button"
+            type="primary"
+            size="large"
+            onClick={handleCheckoutClick}
+          >
+            Оформить заказ
+          </Button>
+        </div>
+      </section>
+      {detailsOpened && (
+        <ModalOverlay onClose={setDetailsOpened}>
+          <Modal onClose={setDetailsOpened}>
+            <OrderDetails orderNum="034536" />
+          </Modal>
+        </ModalOverlay>
+      )}
+    </>
   );
 }
 
