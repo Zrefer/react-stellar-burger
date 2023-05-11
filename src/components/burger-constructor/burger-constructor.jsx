@@ -11,13 +11,14 @@ import { ingredientPropType } from "../../utils/prop-types";
 import ModalOverlay from "../modal-overlay/modal-overlay";
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
+import { useModal } from "../../hooks/useModal";
 
 function BurgerConstructor({ ingredients }) {
   const ingredientsListRef = React.useRef();
   const bottomIngredientRef = React.useRef();
   const controlsRef = React.useRef();
 
-  const [detailsOpened, setDetailsOpened] = React.useState(false);
+  const [detailsOpened, openDetails, closeDetails] = useModal();
 
   const updateListHeight = () => {
     const bottomElement = bottomIngredientRef.current;
@@ -43,10 +44,6 @@ function BurgerConstructor({ ingredients }) {
       window.removeEventListener("resize", updateListHeight);
     };
   }, []);
-
-  const handleCheckoutClick = () => {
-    setDetailsOpened(true);
-  };
 
   const createElements = () => {
     return ingredients.reduce((result, ingredient) => {
@@ -122,15 +119,15 @@ function BurgerConstructor({ ingredients }) {
             htmlType="button"
             type="primary"
             size="large"
-            onClick={handleCheckoutClick}
+            onClick={openDetails}
           >
             Оформить заказ
           </Button>
         </div>
       </section>
       {detailsOpened && (
-        <ModalOverlay onClose={setDetailsOpened}>
-          <Modal onClose={setDetailsOpened}>
+        <ModalOverlay onClose={closeDetails}>
+          <Modal onClose={closeDetails}>
             <OrderDetails orderNum="034536" />
           </Modal>
         </ModalOverlay>

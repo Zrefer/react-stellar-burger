@@ -4,22 +4,17 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./ingredient.module.css";
 import { ingredientPropType } from "../../utils/prop-types";
-import React from "react";
 import ModalOverlay from "../modal-overlay/modal-overlay";
 import Modal from "../modal/modal";
 import IngredientDetails from "../ingredient-details/ingredient-details";
+import { useModal } from "../../hooks/useModal";
 
 function Ingredient({ ingredient }) {
-  const [detailsOpened, setDetailsOpened] = React.useState(false);
-
-  const handleIngredientClick = () => {
-    console.log("closing");
-    setDetailsOpened(true);
-  };
+  const [detailsOpened, openDetails, closeDetails] = useModal();
 
   return (
     <>
-      <div className={styles.ingredient} onClick={handleIngredientClick}>
+      <div className={styles.ingredient} onClick={openDetails}>
         <Counter count={1} size="default" extraClass="m-1" />
         <img
           src={ingredient.image}
@@ -39,8 +34,8 @@ function Ingredient({ ingredient }) {
         </div>
       </div>
       {detailsOpened && (
-        <ModalOverlay onClose={setDetailsOpened}>
-          <Modal title="Детали ингредиента" onClose={setDetailsOpened}>
+        <ModalOverlay onClose={closeDetails}>
+          <Modal title="Детали ингредиента" onClose={closeDetails}>
             <IngredientDetails ingredient={ingredient} />
           </Modal>
         </ModalOverlay>
