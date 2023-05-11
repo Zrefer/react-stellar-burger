@@ -1,5 +1,4 @@
 import styles from "./modal-overlay.module.css";
-import ReactDOM from "react-dom";
 import React from "react";
 import PropTypes from "prop-types";
 
@@ -11,15 +10,14 @@ function ModalOverlay({ onClose, children }) {
     onClose();
   };
 
-  return ReactDOM.createPortal(
+  return (
     <div
       className={styles.overlay}
       ref={overlayRef}
       onMouseDown={handleClickClose}
     >
       <div className={styles.container}>{children}</div>
-    </div>,
-    document.getElementById("modals")
+    </div>
   );
 }
 

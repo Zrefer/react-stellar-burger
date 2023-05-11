@@ -126,11 +126,9 @@ function BurgerConstructor({ ingredients }) {
         </div>
       </section>
       {detailsOpened && (
-        <ModalOverlay onClose={closeDetails}>
-          <Modal onClose={closeDetails}>
-            <OrderDetails orderNum="034536" />
-          </Modal>
-        </ModalOverlay>
+        <Modal onClose={closeDetails}>
+          <OrderDetails orderNum="034536" />
+        </Modal>
       )}
     </>
   );

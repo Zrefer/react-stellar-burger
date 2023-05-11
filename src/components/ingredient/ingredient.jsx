@@ -34,11 +34,9 @@ function Ingredient({ ingredient }) {
         </div>
       </div>
       {detailsOpened && (
-        <ModalOverlay onClose={closeDetails}>
-          <Modal title="Детали ингредиента" onClose={closeDetails}>
-            <IngredientDetails ingredient={ingredient} />
-          </Modal>
-        </ModalOverlay>
+        <Modal title="Детали ингредиента" onClose={closeDetails}>
+          <IngredientDetails ingredient={ingredient} />
+        </Modal>
       )}
     </>
   );
