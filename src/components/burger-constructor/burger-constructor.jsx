@@ -4,16 +4,30 @@ import {
   CurrencyIcon,
   DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import React from "react";
+import React, { useContext, useMemo } from "react";
 import styles from "./burger-constructor.module.css";
-import PropTypes from "prop-types";
-import { ingredientPropType } from "../../utils/prop-types";
-import ModalOverlay from "../modal-overlay/modal-overlay";
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
 import { useModal } from "../../hooks/useModal";
+import {
+  ConstructorContext,
+  IngredientsContext,
+  OrderContext,
+} from "../../services/contexts";
+import { postOrder } from "../../utils/api";
 
-function BurgerConstructor({ ingredients }) {
+function BurgerConstructor() {
+  const allIngredients = useContext(IngredientsContext);
+  const [ingredients, setIngredients] = useContext(ConstructorContext);
+
+  const totalPrice = useMemo(() => {
+    return ingredients.reduce((result, ingredient) => {
+      if (ingredient.type === "bun") return ingredient.price * 2 + result;
+      return ingredient.price + result;
+    }, 0);
+  }, [ingredients, allIngredients]);
+  const [orderNum, setOrderNum] = React.useState(null);
+
   const ingredientsListRef = React.useRef();
   const bottomIngredientRef = React.useRef();
   const controlsRef = React.useRef();
@@ -45,27 +59,39 @@ function BurgerConstructor({ ingredients }) {
     };
   }, []);
 
-  const createElements = () => {
-    return ingredients.reduce((result, ingredient) => {
-      if (ingredient.type === "bun") return result;
-      result.push(
-        <li key={ingredient._id} className={styles["ingredient-item"]}>
-          <DragIcon type="primary" />
-          <ConstructorElement
-            text={ingredient.name}
-            price={ingredient.price}
-            thumbnail={ingredient.image}
-          />
-        </li>
-      );
+  const handleCheckout = () => {
+    const ingredientIDs = ingredients.reduce((result, ingredient) => {
+      result.push(ingredient._id);
+      if (ingredient.type === "bun") result.push(ingredient._id);
       return result;
     }, []);
+
+    postOrder(ingredientIDs)
+      .then((data) => {
+        setOrderNum(data.order.number.toString().padStart(6, "0"));
+        openDetails();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getBun = () => {
+    let bunIngredient = ingredients.find((ingredient) => {
+      return ingredient.type === "bun";
+    });
+    if (bunIngredient) return bunIngredient;
+
+    bunIngredient = allIngredients.find((ingredient) => {
+      return ingredient.type === "bun";
+    });
+    setIngredients([...ingredients, bunIngredient]);
+
+    return bunIngredient;
   };
 
   const createTopBotElements = () => {
-    const bunIngredient = ingredients.find((ingredient) => {
-      return ingredient.type === "bun";
-    });
+    const bunIngredient = getBun();
     return {
       top: (
         <div className={styles.locked}>
@@ -92,11 +118,24 @@ function BurgerConstructor({ ingredients }) {
     };
   };
 
+  const createElements = () => {
+    return ingredients.reduce((result, ingredient) => {
+      if (ingredient.type === "bun") return result;
+      result.push(
+        <li key={ingredient._id} className={styles["ingredient-item"]}>
+          <DragIcon type="primary" />
+          <ConstructorElement
+            text={ingredient.name}
+            price={ingredient.price}
+            thumbnail={ingredient.image}
+          />
+        </li>
+      );
+      return result;
+    }, []);
+  };
+
   const topBotElements = createTopBotElements();
-  const totalPrice = ingredients.reduce((result, ingredient) => {
-    if (ingredient.type === "bun") return result;
-    return ingredient.price + result;
-  }, 0);
   return (
     <>
       <section className={styles.main}>
@@ -119,7 +158,7 @@ function BurgerConstructor({ ingredients }) {
             htmlType="button"
             type="primary"
             size="large"
-            onClick={openDetails}
+            onClick={handleCheckout}
           >
             Оформить заказ
           </Button>
@@ -127,15 +166,13 @@ function BurgerConstructor({ ingredients }) {
       </section>
       {detailsOpened && (
         <Modal onClose={closeDetails}>
-          <OrderDetails orderNum="034536" />
+          <OrderContext.Provider value={orderNum}>
+            <OrderDetails />
+          </OrderContext.Provider>
         </Modal>
       )}
     </>
   );
 }
-
-BurgerConstructor.propTypes = {
-  ingredients: PropTypes.arrayOf(ingredientPropType).isRequired,
-};
 
 export default BurgerConstructor;
