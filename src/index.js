@@ -3,10 +3,33 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./components/app/app";
 import reportWebVitals from "./reportWebVitals";
+import { configureStore } from "@reduxjs/toolkit";
+import { constructorSlice, ingredientsSlice } from "./services/slices";
+import { Provider } from "react-redux";
+
+const store = configureStore({
+  reducer: {
+    ingredients: ingredientsSlice.reducer,
+    constructor: constructorSlice.reducer,
+  },
+  devTools: process.env.NODE_ENV !== "production",
+  preloadedState: {
+    ingredients: {
+      list: [],
+      details: {},
+    },
+    constructor: {
+      ingredients: [],
+      order: {},
+    },
+  },
+});
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

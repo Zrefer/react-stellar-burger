@@ -2,10 +2,11 @@ import React from "react";
 import styles from "./burger-ingredients.module.css";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import Ingredient from "../ingredient/ingredient";
-import PropTypes from "prop-types";
-import { ingredientPropType } from "../../utils/prop-types";
+import { useSelector } from "react-redux";
 
-function BurgerIngredients({ ingredients }) {
+function BurgerIngredients() {
+  const ingredients = useSelector((store) => store.ingredients.list);
+
   const [currentTab, setTab] = React.useState("bun");
   const ingredientsRef = React.useRef();
 
@@ -92,9 +93,5 @@ function BurgerIngredients({ ingredients }) {
     </section>
   );
 }
-
-BurgerIngredients.propTypes = {
-  ingredients: PropTypes.arrayOf(ingredientPropType).isRequired,
-};
 
 export default BurgerIngredients;
