@@ -5,22 +5,28 @@ import BurgerConstructor from "../burger-constructor/burger-constructor";
 import { getIngredients } from "../../utils/api";
 import React from "react";
 import styles from "./app.module.css";
+import {
+  ConstructorContext,
+  IngredientsContext,
+  OrderContext,
+} from "../../services/contexts";
 
 function App() {
-  const [state, setState] = React.useState({});
+  const [ingredients, setIngredients] = React.useState({});
+  const constructorState = React.useState([]);
 
   React.useEffect(() => {
     getIngredients()
       .then((data) => {
-        setState({ ingredients: data });
+        setIngredients({ list: data });
       })
       .catch((err) => {
-        setState({ error: err });
+        setIngredients({ error: err });
       });
   }, []);
 
-  if (state.error) {
-    console.log(state.error);
+  if (ingredients.error) {
+    console.log(ingredients.error);
     return (
       <div className={styles.status}>
         <p
@@ -32,13 +38,17 @@ function App() {
     );
   }
 
-  if (state.ingredients) {
+  if (ingredients.list) {
     return (
       <>
         <AppHeader />
         <AppContent>
-          <BurgerIngredients ingredients={state.ingredients} />
-          <BurgerConstructor ingredients={state.ingredients} />
+          <IngredientsContext.Provider value={ingredients.list}>
+            <ConstructorContext.Provider value={constructorState}>
+              <BurgerIngredients />
+              <BurgerConstructor />
+            </ConstructorContext.Provider>
+          </IngredientsContext.Provider>
         </AppContent>
       </>
     );
