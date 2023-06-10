@@ -1,13 +1,15 @@
+import { useSelector } from "react-redux";
 import styles from "./order-details.module.css";
-import PropTypes from "prop-types";
 
-function OrderDetails({ orderNum }) {
+function OrderDetails() {
+  const number = useSelector((store) => store.constructor.order.number);
+
   return (
     <div className={styles.details}>
       <p
         className={`text text_type_digits-large text_color_primary ${styles.number}`}
       >
-        {orderNum}
+        {number.toString().padStart(6, "0")}
       </p>
       <p className="text text_type_main-medium text_color_primary">
         идентификатор заказа
@@ -22,9 +24,5 @@ function OrderDetails({ orderNum }) {
     </div>
   );
 }
-
-OrderDetails.propTypes = {
-  orderNum: PropTypes.string.isRequired,
-};
 
 export default OrderDetails;

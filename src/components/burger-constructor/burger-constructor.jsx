@@ -6,19 +6,16 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import React from "react";
 import styles from "./burger-constructor.module.css";
-import PropTypes from "prop-types";
-import { ingredientPropType } from "../../utils/prop-types";
-import ModalOverlay from "../modal-overlay/modal-overlay";
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
-import { useModal } from "../../hooks/useModal";
+import { useDispatch, useSelector } from "react-redux";
+import { constructorSlice } from "../../services/slices";
+import { checkoutOrder } from "../../services/actions";
 
-function BurgerConstructor({ ingredients }) {
+function BurgerConstructor() {
   const ingredientsListRef = React.useRef();
   const bottomIngredientRef = React.useRef();
   const controlsRef = React.useRef();
-
-  const [detailsOpened, openDetails, closeDetails] = useModal();
 
   const updateListHeight = () => {
     const bottomElement = bottomIngredientRef.current;
@@ -36,6 +33,27 @@ function BurgerConstructor({ ingredients }) {
     listElement.style.height = targetHeight + "px";
   };
 
+  const dispatch = useDispatch();
+  const { actions } = constructorSlice;
+
+  const allIngredients = useSelector((store) => store.ingredients.list);
+  const ingredients = useSelector((store) => store.constructor.ingredients);
+  const currentBun = useSelector((store) => {
+    let bun = store.constructor.currentBun;
+    if (bun) return bun;
+
+    bun = allIngredients.find((ingredient) => {
+      return ingredient.type === "bun";
+    });
+    dispatch(actions.addIngredient(bun));
+    return bun;
+  });
+
+  const { detailsOpened, checkoutSended } = useSelector((store) => ({
+    detailsOpened: store.constructor.order.detailsOpened,
+    checkoutSended: store.constructor.order.checkoutSended,
+  }));
+
   React.useEffect(() => {
     window.addEventListener("resize", updateListHeight);
     updateListHeight();
@@ -43,7 +61,42 @@ function BurgerConstructor({ ingredients }) {
     return () => {
       window.removeEventListener("resize", updateListHeight);
     };
-  }, []);
+  }, [dispatch]);
+
+  const closeDetails = () => dispatch(actions.closeDetails());
+  const handleCheckout = () => {
+    if (checkoutSended) return;
+    dispatch(
+      checkoutOrder([currentBun].concat(ingredients.concat([currentBun])))
+    );
+  };
+
+  const createTopBotElements = () => {
+    return {
+      top: (
+        <div className={styles.locked}>
+          <ConstructorElement
+            text={`${currentBun.name} (верх)`}
+            price={currentBun.price}
+            thumbnail={currentBun.image}
+            isLocked={true}
+            type="top"
+          />
+        </div>
+      ),
+      bot: (
+        <div className={styles.locked} ref={bottomIngredientRef}>
+          <ConstructorElement
+            text={`${currentBun.name} (низ)`}
+            price={currentBun.price}
+            thumbnail={currentBun.image}
+            isLocked={true}
+            type="bottom"
+          />
+        </div>
+      ),
+    };
+  };
 
   const createElements = () => {
     return ingredients.reduce((result, ingredient) => {
@@ -62,41 +115,14 @@ function BurgerConstructor({ ingredients }) {
     }, []);
   };
 
-  const createTopBotElements = () => {
-    const bunIngredient = ingredients.find((ingredient) => {
-      return ingredient.type === "bun";
-    });
-    return {
-      top: (
-        <div className={styles.locked}>
-          <ConstructorElement
-            text={`${bunIngredient.name} (верх)`}
-            price={bunIngredient.price}
-            thumbnail={bunIngredient.image}
-            isLocked={true}
-            type="top"
-          />
-        </div>
-      ),
-      bot: (
-        <div className={styles.locked} ref={bottomIngredientRef}>
-          <ConstructorElement
-            text={`${bunIngredient.name} (низ)`}
-            price={bunIngredient.price}
-            thumbnail={bunIngredient.image}
-            isLocked={true}
-            type="bottom"
-          />
-        </div>
-      ),
-    };
-  };
+  const totalPrice =
+    ingredients.reduce((result, ingredient) => {
+      if (ingredient.type === "bun") return result;
+      return ingredient.price + result;
+    }, 0) +
+    currentBun.price * 2;
 
   const topBotElements = createTopBotElements();
-  const totalPrice = ingredients.reduce((result, ingredient) => {
-    if (ingredient.type === "bun") return result;
-    return ingredient.price + result;
-  }, 0);
   return (
     <>
       <section className={styles.main}>
@@ -119,7 +145,7 @@ function BurgerConstructor({ ingredients }) {
             htmlType="button"
             type="primary"
             size="large"
-            onClick={openDetails}
+            onClick={handleCheckout}
           >
             Оформить заказ
           </Button>
@@ -127,15 +153,11 @@ function BurgerConstructor({ ingredients }) {
       </section>
       {detailsOpened && (
         <Modal onClose={closeDetails}>
-          <OrderDetails orderNum="034536" />
+          <OrderDetails />
         </Modal>
       )}
     </>
   );
 }
-
-BurgerConstructor.propTypes = {
-  ingredients: PropTypes.arrayOf(ingredientPropType).isRequired,
-};
 
 export default BurgerConstructor;
