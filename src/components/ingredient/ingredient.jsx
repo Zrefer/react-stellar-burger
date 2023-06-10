@@ -2,32 +2,44 @@ import {
   Counter,
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import React from "react";
 import styles from "./ingredient.module.css";
 import { ingredientPropType } from "../../utils/prop-types";
-import PropTypes from "prop-types";
+import ModalOverlay from "../modal-overlay/modal-overlay";
+import Modal from "../modal/modal";
+import IngredientDetails from "../ingredient-details/ingredient-details";
+import { useModal } from "../../hooks/useModal";
 
-class Ingredient extends React.PureComponent {
-  render() {
-    const ing = this.props.ingredient;
-    return (
-      <div className={styles.ingredient}>
+function Ingredient({ ingredient }) {
+  const [detailsOpened, openDetails, closeDetails] = useModal();
+
+  return (
+    <>
+      <div className={styles.ingredient} onClick={openDetails}>
         <Counter count={1} size="default" extraClass="m-1" />
-        <img src={ing.image} alt={ing.name} className={styles.image}></img>
+        <img
+          src={ingredient.image}
+          alt={ingredient.name}
+          className={styles.image}
+        ></img>
         <div className={styles.price}>
           <p className="text text_type_digits-default text_color_primary">
-            {ing.price}
+            {ingredient.price}
           </p>
           <CurrencyIcon type="primary" />
         </div>
         <div className={styles.name}>
           <p className="text text_type_main-default text_color_primary">
-            {ing.name}
+            {ingredient.name}
           </p>
         </div>
       </div>
-    );
-  }
+      {detailsOpened && (
+        <Modal title="Детали ингредиента" onClose={closeDetails}>
+          <IngredientDetails ingredient={ingredient} />
+        </Modal>
+      )}
+    </>
+  );
 }
 
 Ingredient.propTypes = {
