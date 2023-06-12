@@ -47,15 +47,15 @@ export const constructorSlice = createSlice({
   reducers: {
     addIngredient: (state, action) => {
       if (action.payload.type === "bun") {
-        const ingredient = action.payload;
-        const ingredientCount = state.itemsCount[ingredient._id];
+        const newItemsCount = {
+          ...state.itemsCount,
+        };
+        if (state.currentBun) newItemsCount[state.currentBun._id] = 0;
+        newItemsCount[action.payload._id] = 1;
         return {
           ...state,
-          currentBun: ingredient,
-          itemsCount: {
-            ...state.itemsCount,
-            [ingredient._id]: ingredientCount ? ingredientCount + 1 : 1,
-          },
+          currentBun: action.payload,
+          itemsCount: newItemsCount,
         };
       }
 
@@ -64,9 +64,24 @@ export const constructorSlice = createSlice({
         uuid: uuid(),
       };
 
+      const ingredientCount = state.itemsCount[ingredient._id];
       return {
         ...state,
-        ingredients: [...state.ingredients, ingredient],
+        items: [...state.items, ingredient],
+        itemsCount: {
+          ...state.itemsCount,
+          [ingredient._id]: ingredientCount ? ingredientCount + 1 : 1,
+        },
+      };
+    },
+    removeIngredient: (state, action) => {
+      return {
+        ...state,
+        items: state.items.filter((item) => item.uuid !== action.payload.uuid),
+        itemsCount: {
+          ...state.itemsCount,
+          [action.payload._id]: state.itemsCount[action.payload._id] - 1,
+        },
       };
     },
   },

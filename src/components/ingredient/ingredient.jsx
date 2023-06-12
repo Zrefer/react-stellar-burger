@@ -8,6 +8,7 @@ import Modal from "../modal/modal";
 import IngredientDetails from "../ingredient-details/ingredient-details";
 import { ingDetailsSlice } from "../../services/slices";
 import { useDispatch, useSelector } from "react-redux";
+import { useDrag } from "react-dnd";
 
 function Ingredient({ ingredient }) {
   const dispatch = useDispatch();
@@ -26,10 +27,15 @@ function Ingredient({ ingredient }) {
     dispatch(actions.closeDetails());
   };
 
+  const [, dragRef] = useDrag({
+    type: "ingredient",
+    item: { id: ingredient._id },
+  });
+
   return (
     <>
-      <div className={styles.ingredient} onClick={handleClick}>
-        {ingredientCount && (
+      <div className={styles.ingredient} onClick={handleClick} ref={dragRef}>
+        {ingredientCount > 0 && (
           <Counter count={ingredientCount} size="default" extraClass="m-1" />
         )}
         <img

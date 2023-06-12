@@ -11,6 +11,7 @@ import OrderDetails from "../order-details/order-details";
 import { useDispatch, useSelector } from "react-redux";
 import { constructorSlice, orderDetailsSlice } from "../../services/slices";
 import { checkoutOrder } from "../../services/actions";
+import { useDrop } from "react-dnd";
 
 function BurgerConstructor() {
   const ingredientsListRef = React.useRef();
@@ -69,6 +70,14 @@ function BurgerConstructor() {
     );
   };
 
+  const [, dropRef] = useDrop({
+    accept: "ingredient",
+    drop(item) {
+      const ingredient = allIngredients.find((ing) => ing._id === item.id);
+      dispatch(constructorSlice.actions.addIngredient(ingredient));
+    },
+  });
+
   const createTopBotElements = () => {
     return {
       top: (
@@ -106,6 +115,9 @@ function BurgerConstructor() {
             text={ingredient.name}
             price={ingredient.price}
             thumbnail={ingredient.image}
+            handleClose={() =>
+              dispatch(constructorSlice.actions.removeIngredient(ingredient))
+            }
           />
         </li>
       );
@@ -123,7 +135,7 @@ function BurgerConstructor() {
   const topBotElements = createTopBotElements();
   return (
     <>
-      <section className={styles.main}>
+      <section className={styles.main} ref={dropRef}>
         <div className={styles.ingredients}>
           {topBotElements.top}
           <ul
