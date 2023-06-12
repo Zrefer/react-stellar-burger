@@ -61,7 +61,7 @@ export const constructorSlice = createSlice({
 
       const ingredient = {
         ...action.payload,
-        uuid: uuid(),
+        uid: uuid(),
       };
 
       const ingredientCount = state.itemsCount[ingredient._id];
@@ -77,12 +77,19 @@ export const constructorSlice = createSlice({
     removeIngredient: (state, action) => {
       return {
         ...state,
-        items: state.items.filter((item) => item.uuid !== action.payload.uuid),
+        items: state.items.filter((item) => item.uid !== action.payload.uid),
         itemsCount: {
           ...state.itemsCount,
           [action.payload._id]: state.itemsCount[action.payload._id] - 1,
         },
       };
+    },
+    reorderIngredients: (state, action) => {
+      const { dragUid, hoverUid } = action.payload;
+      const dragIndex = state.items.findIndex((item) => item.uid === dragUid);
+      const hoverIndex = state.items.findIndex((item) => item.uid === hoverUid);
+      const ingredient = state.items.splice(dragIndex, 1)[0];
+      state.items.splice(hoverIndex, 0, ingredient);
     },
   },
 });

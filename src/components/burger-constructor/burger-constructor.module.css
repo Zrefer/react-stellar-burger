@@ -21,12 +21,6 @@
     padding-right: 8px;
 }
 
-.ingredient-item {
-    align-items: center;
-    display: flex;
-    gap: 8px;
-}
-
 .controls {
     display: flex;
     justify-content: flex-end;

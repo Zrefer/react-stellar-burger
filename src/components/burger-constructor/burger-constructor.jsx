@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { constructorSlice, orderDetailsSlice } from "../../services/slices";
 import { checkoutOrder } from "../../services/actions";
 import { useDrop } from "react-dnd";
+import DraggableIngredient from "../draggable-ingredient/draggable-ingredient";
 
 function BurgerConstructor() {
   const ingredientsListRef = React.useRef();
@@ -73,6 +74,7 @@ function BurgerConstructor() {
   const [, dropRef] = useDrop({
     accept: "ingredient",
     drop(item) {
+      if (!item.id) return;
       const ingredient = allIngredients.find((ing) => ing._id === item.id);
       dispatch(constructorSlice.actions.addIngredient(ingredient));
     },
@@ -109,16 +111,8 @@ function BurgerConstructor() {
     return ingredients.reduce((result, ingredient) => {
       if (ingredient.type === "bun") return result;
       result.push(
-        <li key={ingredient.uuid} className={styles["ingredient-item"]}>
-          <DragIcon type="primary" />
-          <ConstructorElement
-            text={ingredient.name}
-            price={ingredient.price}
-            thumbnail={ingredient.image}
-            handleClose={() =>
-              dispatch(constructorSlice.actions.removeIngredient(ingredient))
-            }
-          />
+        <li key={ingredient.uid}>
+          <DraggableIngredient ingredient={ingredient} />
         </li>
       );
       return result;
@@ -135,8 +129,8 @@ function BurgerConstructor() {
   const topBotElements = createTopBotElements();
   return (
     <>
-      <section className={styles.main} ref={dropRef}>
-        <div className={styles.ingredients}>
+      <section className={styles.main}>
+        <div className={styles.ingredients} ref={dropRef}>
           {topBotElements.top}
           <ul
             className={`${styles["ingredients-list"]} custom-scroll`}
