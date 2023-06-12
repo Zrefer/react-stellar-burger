@@ -26,6 +26,63 @@ function BurgerIngredients() {
     };
   }, []);
 
+  const bunsSectNameRef = React.useRef();
+  const saucesSectNameRef = React.useRef();
+  const mainSectNameRef = React.useRef();
+
+  const handleScroll = () => {
+    const containerTop = ingredientsRef.current.getBoundingClientRect().y;
+    let minDist = Number.MAX_SAFE_INTEGER;
+    let closestSectionName = null;
+
+    const bunsDist = Math.abs(
+      containerTop - bunsSectNameRef.current.getBoundingClientRect().y
+    );
+    if (bunsDist < minDist) {
+      minDist = bunsDist;
+      closestSectionName = "bun";
+    }
+
+    const saucesDist = Math.abs(
+      containerTop - saucesSectNameRef.current.getBoundingClientRect().y
+    );
+    if (saucesDist < minDist) {
+      minDist = saucesDist;
+      closestSectionName = "sauce";
+    }
+
+    const mainDist = Math.abs(
+      containerTop - mainSectNameRef.current.getBoundingClientRect().y
+    );
+    if (mainDist < minDist) {
+      minDist = mainDist;
+      closestSectionName = "main";
+    }
+
+    setTab(closestSectionName);
+  };
+
+  const handleTabClick = (tab) => {
+    const scrollOptions = {
+      behavior: "smooth",
+      block: "start",
+      inline: "nearest",
+    };
+    switch (tab) {
+      case "bun":
+        bunsSectNameRef.current.scrollIntoView(scrollOptions);
+        break;
+      case "sauce":
+        saucesSectNameRef.current.scrollIntoView(scrollOptions);
+        break;
+      case "main":
+        mainSectNameRef.current.scrollIntoView(scrollOptions);
+        break;
+      default:
+        break;
+    }
+  };
+
   const createIngredients = (type) => {
     return ingredients.reduce((result, ingredient) => {
       if (ingredient.type !== type) return result;
@@ -45,22 +102,32 @@ function BurgerIngredients() {
         Соберите бургер
       </h2>
       <div className={`mt-5 ${styles.tabs}`}>
-        <Tab value="bun" active={currentTab === "bun"} onClick={setTab}>
+        <Tab value="bun" active={currentTab === "bun"} onClick={handleTabClick}>
           Булки
         </Tab>
-        <Tab value="sauce" active={currentTab === "sauce"} onClick={setTab}>
+        <Tab
+          value="sauce"
+          active={currentTab === "sauce"}
+          onClick={handleTabClick}
+        >
           Соусы
         </Tab>
-        <Tab value="main" active={currentTab === "main"} onClick={setTab}>
+        <Tab
+          value="main"
+          active={currentTab === "main"}
+          onClick={handleTabClick}
+        >
           Начинки
         </Tab>
       </div>
       <div
         className={`${styles.ingredients} custom-scroll`}
         ref={ingredientsRef}
+        onScroll={handleScroll}
       >
         <div className={styles.section}>
           <p
+            ref={bunsSectNameRef}
             className={`text text_type_main-medium text_color_primary ${styles["section-name"]}`}
           >
             Булки
@@ -71,6 +138,7 @@ function BurgerIngredients() {
         </div>
         <div>
           <p
+            ref={saucesSectNameRef}
             className={`text text_type_main-medium text_color_primary ${styles["section-name"]}`}
           >
             Соусы
@@ -81,6 +149,7 @@ function BurgerIngredients() {
         </div>
         <div>
           <p
+            ref={mainSectNameRef}
             className={`text text_type_main-medium text_color_primary ${styles["section-name"]}`}
           >
             Начинки
