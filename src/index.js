@@ -28,8 +28,6 @@ const store = configureStore({
   },
 });
 
-console.log(ingredientsSlice);
-
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>

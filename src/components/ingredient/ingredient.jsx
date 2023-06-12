@@ -6,7 +6,7 @@ import styles from "./ingredient.module.css";
 import { ingredientPropType } from "../../utils/prop-types";
 import Modal from "../modal/modal";
 import IngredientDetails from "../ingredient-details/ingredient-details";
-import { ingDetailsSlice, ingredientsSlice } from "../../services/slices";
+import { ingDetailsSlice } from "../../services/slices";
 import { useDispatch, useSelector } from "react-redux";
 
 function Ingredient({ ingredient }) {
@@ -14,6 +14,9 @@ function Ingredient({ ingredient }) {
   const { actions } = ingDetailsSlice;
 
   const detailsIngredient = useSelector((store) => store.ingDetails.ingredient);
+  const ingredientCount = useSelector(
+    (store) => store.constructor.itemsCount[ingredient._id]
+  );
 
   const handleClick = () => {
     dispatch(actions.openDetails(ingredient));
@@ -26,7 +29,9 @@ function Ingredient({ ingredient }) {
   return (
     <>
       <div className={styles.ingredient} onClick={handleClick}>
-        <Counter count={1} size="default" extraClass="m-1" />
+        {ingredientCount && (
+          <Counter count={ingredientCount} size="default" extraClass="m-1" />
+        )}
         <img
           src={ingredient.image}
           alt={ingredient.name}

@@ -100,7 +100,7 @@ function BurgerConstructor() {
     return ingredients.reduce((result, ingredient) => {
       if (ingredient.type === "bun") return result;
       result.push(
-        <li key={ingredient._id} className={styles["ingredient-item"]}>
+        <li key={ingredient.uuid} className={styles["ingredient-item"]}>
           <DragIcon type="primary" />
           <ConstructorElement
             text={ingredient.name}
