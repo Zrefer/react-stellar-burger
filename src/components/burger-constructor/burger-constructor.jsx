@@ -4,35 +4,18 @@ import {
   CurrencyIcon,
   DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import React, { useContext, useMemo } from "react";
+import React from "react";
 import styles from "./burger-constructor.module.css";
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
-import { useModal } from "../../hooks/useModal";
-import {
-  ConstructorContext,
-  IngredientsContext,
-  OrderContext,
-} from "../../services/contexts";
-import { postOrder } from "../../utils/api";
+import { useDispatch, useSelector } from "react-redux";
+import { constructorSlice, orderDetailsSlice } from "../../services/slices";
+import { checkoutOrder } from "../../services/actions";
 
 function BurgerConstructor() {
-  const allIngredients = useContext(IngredientsContext);
-  const [ingredients, setIngredients] = useContext(ConstructorContext);
-
-  const totalPrice = useMemo(() => {
-    return ingredients.reduce((result, ingredient) => {
-      if (ingredient.type === "bun") return ingredient.price * 2 + result;
-      return ingredient.price + result;
-    }, 0);
-  }, [ingredients, allIngredients]);
-  const [orderNum, setOrderNum] = React.useState(null);
-
   const ingredientsListRef = React.useRef();
   const bottomIngredientRef = React.useRef();
   const controlsRef = React.useRef();
-
-  const [detailsOpened, openDetails, closeDetails] = useModal();
 
   const updateListHeight = () => {
     const bottomElement = bottomIngredientRef.current;
@@ -50,6 +33,25 @@ function BurgerConstructor() {
     listElement.style.height = targetHeight + "px";
   };
 
+  const dispatch = useDispatch();
+
+  const allIngredients = useSelector((store) => store.ingredients.items);
+  const ingredients = useSelector((store) => store.constructor.items);
+  const currentBun = useSelector((store) => {
+    let bun = store.constructor.currentBun;
+    if (bun) return bun;
+
+    bun = allIngredients.find((ingredient) => {
+      return ingredient.type === "bun";
+    });
+    dispatch(constructorSlice.actions.addIngredient(bun));
+    return bun;
+  });
+
+  const { detailsOpened, checkoutSended } = useSelector(
+    (store) => store.orderDetails
+  );
+
   React.useEffect(() => {
     window.addEventListener("resize", updateListHeight);
     updateListHeight();
@@ -57,48 +59,24 @@ function BurgerConstructor() {
     return () => {
       window.removeEventListener("resize", updateListHeight);
     };
-  }, []);
+  }, [dispatch]);
 
+  const closeDetails = () => dispatch(orderDetailsSlice.actions.closeDetails());
   const handleCheckout = () => {
-    const ingredientIDs = ingredients.reduce((result, ingredient) => {
-      result.push(ingredient._id);
-      if (ingredient.type === "bun") result.push(ingredient._id);
-      return result;
-    }, []);
-
-    postOrder(ingredientIDs)
-      .then((data) => {
-        setOrderNum(data.order.number.toString().padStart(6, "0"));
-        openDetails();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const getBun = () => {
-    let bunIngredient = ingredients.find((ingredient) => {
-      return ingredient.type === "bun";
-    });
-    if (bunIngredient) return bunIngredient;
-
-    bunIngredient = allIngredients.find((ingredient) => {
-      return ingredient.type === "bun";
-    });
-    setIngredients([...ingredients, bunIngredient]);
-
-    return bunIngredient;
+    if (checkoutSended) return;
+    dispatch(
+      checkoutOrder([currentBun].concat(ingredients.concat([currentBun])))
+    );
   };
 
   const createTopBotElements = () => {
-    const bunIngredient = getBun();
     return {
       top: (
         <div className={styles.locked}>
           <ConstructorElement
-            text={`${bunIngredient.name} (верх)`}
-            price={bunIngredient.price}
-            thumbnail={bunIngredient.image}
+            text={`${currentBun.name} (верх)`}
+            price={currentBun.price}
+            thumbnail={currentBun.image}
             isLocked={true}
             type="top"
           />
@@ -107,9 +85,9 @@ function BurgerConstructor() {
       bot: (
         <div className={styles.locked} ref={bottomIngredientRef}>
           <ConstructorElement
-            text={`${bunIngredient.name} (низ)`}
-            price={bunIngredient.price}
-            thumbnail={bunIngredient.image}
+            text={`${currentBun.name} (низ)`}
+            price={currentBun.price}
+            thumbnail={currentBun.image}
             isLocked={true}
             type="bottom"
           />
@@ -134,6 +112,13 @@ function BurgerConstructor() {
       return result;
     }, []);
   };
+
+  const totalPrice =
+    ingredients.reduce((result, ingredient) => {
+      if (ingredient.type === "bun") return result;
+      return ingredient.price + result;
+    }, 0) +
+    currentBun.price * 2;
 
   const topBotElements = createTopBotElements();
   return (
@@ -166,9 +151,7 @@ function BurgerConstructor() {
       </section>
       {detailsOpened && (
         <Modal onClose={closeDetails}>
-          <OrderContext.Provider value={orderNum}>
-            <OrderDetails />
-          </OrderContext.Provider>
+          <OrderDetails />
         </Modal>
       )}
     </>

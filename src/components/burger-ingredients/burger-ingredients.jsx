@@ -2,11 +2,10 @@ import React from "react";
 import styles from "./burger-ingredients.module.css";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import Ingredient from "../ingredient/ingredient";
-import { useContext } from "react";
-import { IngredientsContext } from "../../services/contexts";
+import { useSelector } from "react-redux";
 
 function BurgerIngredients() {
-  const ingredients = useContext(IngredientsContext);
+  const ingredients = useSelector((store) => store.ingredients.items);
 
   const [currentTab, setTab] = React.useState("bun");
   const ingredientsRef = React.useRef();
