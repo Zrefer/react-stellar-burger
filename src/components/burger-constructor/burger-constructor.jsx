@@ -3,7 +3,7 @@ import {
   ConstructorElement,
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import React from "react";
+import React, { useMemo } from "react";
 import styles from "./burger-constructor.module.css";
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
@@ -131,12 +131,15 @@ function BurgerConstructor() {
     }, []);
   };
 
-  const totalPrice =
-    ingredients.reduce((result, ingredient) => {
-      if (ingredient.type === "bun") return result;
-      return ingredient.price + result;
-    }, 0) +
-    currentBun.price * 2;
+  const totalPrice = useMemo(() => {
+    return (
+      ingredients.reduce((result, ingredient) => {
+        if (ingredient.type === "bun") return result;
+        return ingredient.price + result;
+      }, 0) +
+      currentBun.price * 2
+    );
+  }, [ingredients, currentBun]);
 
   const topBotElements = createTopBotElements();
   return (
