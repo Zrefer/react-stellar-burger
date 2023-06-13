@@ -1,19 +1,8 @@
-import { ingredientsSlice, orderDetailsSlice } from "./slices";
-import { fetchIngredients, postOrder } from "../utils/api";
-
-export const getIngredients = () => (dispatch) => {
-  const { actions } = ingredientsSlice;
-  fetchIngredients()
-    .then((data) => {
-      dispatch(actions.requestSuccess(data));
-    })
-    .catch((err) => {
-      dispatch(actions.requestFailed(err));
-    });
-};
+import { orderSlice } from "./slices";
+import { postOrder } from "../../utils/api";
 
 export const checkoutOrder = (ingredients) => (dispatch) => {
-  const { actions } = orderDetailsSlice;
+  const { actions } = orderSlice;
   dispatch(actions.checkoutSended());
 
   const ingredientIDs = ingredients.reduce((result, ingredient) => {

@@ -4,7 +4,7 @@ import {
   ConstructorElement,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { ingredientPropType } from "../../utils/prop-types";
-import { constructorSlice } from "../../services/slices";
+import { constructorSlice } from "../../services/constructor/slices";
 import { useDispatch } from "react-redux";
 import { useDrag, useDrop } from "react-dnd";
 

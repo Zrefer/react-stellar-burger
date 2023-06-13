@@ -2,17 +2,18 @@ import {
   Button,
   ConstructorElement,
   CurrencyIcon,
-  DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import React from "react";
 import styles from "./burger-constructor.module.css";
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
 import { useDispatch, useSelector } from "react-redux";
-import { constructorSlice, orderDetailsSlice } from "../../services/slices";
-import { checkoutOrder } from "../../services/actions";
+import { constructorSlice } from "../../services/constructor/slices";
+import { orderSlice } from "../../services/order/slices";
+import { checkoutOrder } from "../../services/order/actions";
 import { useDrop } from "react-dnd";
 import DraggableIngredient from "../draggable-ingredient/draggable-ingredient";
+import { v4 as uuid } from "uuid";
 
 function BurgerConstructor() {
   const ingredientsListRef = React.useRef();
@@ -46,7 +47,7 @@ function BurgerConstructor() {
     bun = allIngredients.find((ingredient) => {
       return ingredient.type === "bun";
     });
-    dispatch(constructorSlice.actions.addIngredient(bun));
+    dispatch(constructorSlice.actions.changeBun(bun));
     return bun;
   });
 
@@ -63,7 +64,7 @@ function BurgerConstructor() {
     };
   }, [dispatch]);
 
-  const closeDetails = () => dispatch(orderDetailsSlice.actions.closeDetails());
+  const closeDetails = () => dispatch(orderSlice.actions.closeDetails());
   const handleCheckout = () => {
     if (checkoutSended) return;
     dispatch(
@@ -76,7 +77,18 @@ function BurgerConstructor() {
     drop(item) {
       if (!item.id) return;
       const ingredient = allIngredients.find((ing) => ing._id === item.id);
-      dispatch(constructorSlice.actions.addIngredient(ingredient));
+
+      if (item.isBun) {
+        dispatch(constructorSlice.actions.changeBun(ingredient));
+        return;
+      }
+
+      dispatch(
+        constructorSlice.actions.addIngredient({
+          item: ingredient,
+          uid: uuid(),
+        })
+      );
     },
   });
 

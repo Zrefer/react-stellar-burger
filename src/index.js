@@ -4,12 +4,10 @@ import "./index.css";
 import App from "./components/app/app";
 import reportWebVitals from "./reportWebVitals";
 import { configureStore } from "@reduxjs/toolkit";
-import {
-  constructorSlice,
-  ingDetailsSlice,
-  ingredientsSlice,
-  orderDetailsSlice,
-} from "./services/slices";
+import { constructorSlice } from "./services/constructor/slices";
+import { ingredientsSlice } from "./services/ingredients/slices";
+import { ingDetailsSlice } from "./services/ingredient-details/slices";
+import { orderSlice } from "./services/order/slices";
 import { Provider } from "react-redux";
 
 const store = configureStore({
@@ -17,14 +15,14 @@ const store = configureStore({
     ingredients: ingredientsSlice.reducer,
     constructor: constructorSlice.reducer,
     ingDetails: ingDetailsSlice.reducer,
-    orderDetails: orderDetailsSlice.reducer,
+    orderDetails: orderSlice.reducer,
   },
   devTools: process.env.NODE_ENV !== "production",
   preloadedState: {
     ingredients: ingredientsSlice.getInitialState(),
     constructor: constructorSlice.getInitialState(),
     ingDetails: ingDetailsSlice.getInitialState(),
-    orderDetails: orderDetailsSlice.getInitialState(),
+    orderDetails: orderSlice.getInitialState(),
   },
 });
 

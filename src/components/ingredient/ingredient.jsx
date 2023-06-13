@@ -6,7 +6,7 @@ import styles from "./ingredient.module.css";
 import { ingredientPropType } from "../../utils/prop-types";
 import Modal from "../modal/modal";
 import IngredientDetails from "../ingredient-details/ingredient-details";
-import { ingDetailsSlice } from "../../services/slices";
+import { ingDetailsSlice } from "../../services/ingredient-details/slices";
 import { useDispatch, useSelector } from "react-redux";
 import { useDrag } from "react-dnd";
 
@@ -29,7 +29,7 @@ function Ingredient({ ingredient }) {
 
   const [, dragRef] = useDrag({
     type: "ingredient",
-    item: { id: ingredient._id },
+    item: { id: ingredient._id, isBun: ingredient.type === "bun" },
   });
 
   return (
