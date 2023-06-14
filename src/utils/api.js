@@ -1,7 +1,7 @@
 const _ingredientsApiUrl = "https://norma.nomoreparties.space/api/ingredients";
 const _ordersApiUrl = "https://norma.nomoreparties.space/api/orders/";
 
-export function getIngredients() {
+export function fetchIngredients() {
   return fetch(_ingredientsApiUrl)
     .then((response) => {
       if (response.ok) return response.json();

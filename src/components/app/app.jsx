@@ -2,31 +2,23 @@ import AppContent from "../app-content/app-content";
 import AppHeader from "../app-header/app-header";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
-import { getIngredients } from "../../utils/api";
 import React from "react";
 import styles from "./app.module.css";
-import {
-  ConstructorContext,
-  IngredientsContext,
-  OrderContext,
-} from "../../services/contexts";
+import { useDispatch, useSelector } from "react-redux";
+import { getIngredients } from "../../services/ingredients/actions";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 function App() {
-  const [ingredients, setIngredients] = React.useState({});
-  const constructorState = React.useState([]);
-
+  const dispatch = useDispatch();
   React.useEffect(() => {
-    getIngredients()
-      .then((data) => {
-        setIngredients({ list: data });
-      })
-      .catch((err) => {
-        setIngredients({ error: err });
-      });
-  }, []);
+    dispatch(getIngredients());
+  }, [dispatch]);
 
-  if (ingredients.error) {
-    console.log(ingredients.error);
+  const { requestError, items } = useSelector((store) => store.ingredients);
+
+  if (requestError) {
+    console.log(requestError);
     return (
       <div className={styles.status}>
         <p
@@ -38,17 +30,15 @@ function App() {
     );
   }
 
-  if (ingredients.list) {
+  if (items.length > 0) {
     return (
       <>
         <AppHeader />
         <AppContent>
-          <IngredientsContext.Provider value={ingredients.list}>
-            <ConstructorContext.Provider value={constructorState}>
-              <BurgerIngredients />
-              <BurgerConstructor />
-            </ConstructorContext.Provider>
-          </IngredientsContext.Provider>
+          <DndProvider backend={HTML5Backend}>
+            <BurgerIngredients />
+            <BurgerConstructor />
+          </DndProvider>
         </AppContent>
       </>
     );

@@ -4,18 +4,40 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./ingredient.module.css";
 import { ingredientPropType } from "../../utils/prop-types";
-import ModalOverlay from "../modal-overlay/modal-overlay";
 import Modal from "../modal/modal";
 import IngredientDetails from "../ingredient-details/ingredient-details";
-import { useModal } from "../../hooks/useModal";
+import { ingDetailsSlice } from "../../services/ingredient-details/slices";
+import { useDispatch, useSelector } from "react-redux";
+import { useDrag } from "react-dnd";
 
 function Ingredient({ ingredient }) {
-  const [detailsOpened, openDetails, closeDetails] = useModal();
+  const dispatch = useDispatch();
+  const { actions } = ingDetailsSlice;
+
+  const detailsIngredient = useSelector((store) => store.ingDetails.ingredient);
+  const ingredientCount = useSelector(
+    (store) => store.constructor.itemsCount[ingredient._id]
+  );
+
+  const handleClick = () => {
+    dispatch(actions.openDetails(ingredient));
+  };
+
+  const closeDetails = () => {
+    dispatch(actions.closeDetails());
+  };
+
+  const [, dragRef] = useDrag({
+    type: "ingredient",
+    item: { id: ingredient._id, isBun: ingredient.type === "bun" },
+  });
 
   return (
     <>
-      <div className={styles.ingredient} onClick={openDetails}>
-        <Counter count={1} size="default" extraClass="m-1" />
+      <div className={styles.ingredient} onClick={handleClick} ref={dragRef}>
+        {ingredientCount > 0 && (
+          <Counter count={ingredientCount} size="default" extraClass="m-1" />
+        )}
         <img
           src={ingredient.image}
           alt={ingredient.name}
@@ -33,9 +55,9 @@ function Ingredient({ ingredient }) {
           </p>
         </div>
       </div>
-      {detailsOpened && (
+      {detailsIngredient && detailsIngredient._id === ingredient._id && (
         <Modal title="Детали ингредиента" onClose={closeDetails}>
-          <IngredientDetails ingredient={ingredient} />
+          <IngredientDetails />
         </Modal>
       )}
     </>
