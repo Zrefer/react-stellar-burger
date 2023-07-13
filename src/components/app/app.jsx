@@ -8,6 +8,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { getIngredients } from "../../services/ingredients/actions";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { NotFound404 } from "../../pages/not-found";
+import { LoginPage } from "../../pages/login";
+import { RegisterPage } from "../../pages/register";
+import { ForgotPasswordPage } from "../../pages/forgot-password";
+import { ResetPasswordPage } from "../../pages/reset-password";
 
 function App() {
   const dispatch = useDispatch();
@@ -35,10 +41,31 @@ function App() {
       <>
         <AppHeader />
         <AppContent>
-          <DndProvider backend={HTML5Backend}>
-            <BurgerIngredients />
-            <BurgerConstructor />
-          </DndProvider>
+          <BrowserRouter>
+            <Switch>
+              <Route path="/" exact>
+                <DndProvider backend={HTML5Backend}>
+                  <BurgerIngredients />
+                  <BurgerConstructor />
+                </DndProvider>
+              </Route>
+              <Route path="/login" exact>
+                <LoginPage />
+              </Route>
+              <Route path="/register" exact>
+                <RegisterPage />
+              </Route>
+              <Route path="/forgot-password" exact>
+                <ForgotPasswordPage />
+              </Route>
+              <Route path="/reset-password" exact>
+                <ResetPasswordPage />
+              </Route>
+              <Route path="*">
+                <NotFound404 />
+              </Route>
+            </Switch>
+          </BrowserRouter>
         </AppContent>
       </>
     );
