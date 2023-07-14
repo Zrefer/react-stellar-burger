@@ -19,10 +19,9 @@ export function ForgotPasswordPage() {
 
   const onResetClick = () => {
     if (requestSended) return;
-    forgotPassword(form).then(() => {
-      sessionStorage.setItem("forgot-password-process", true);
-      history.replace("/reset-password");
-    });
+    forgotPassword(form).then(() =>
+      history.replace("/reset-password", { valid: true })
+    );
   };
 
   return (

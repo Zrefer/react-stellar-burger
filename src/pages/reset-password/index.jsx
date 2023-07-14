@@ -4,7 +4,7 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./reset-password.module.css";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { useProvideAuth } from "../../hooks/useProvideAuth";
 import { useHistory } from "react-router-dom";
 
@@ -21,11 +21,11 @@ export function ResetPasswordPage() {
 
   const onResetClick = () => {
     if (requestSended) return;
-    resetPassword(form).then(() => {
-      sessionStorage.removeItem("forgot-password-process");
-      history.replace("/login");
-    });
+    resetPassword(form).then(() => history.replace("/login"));
   };
+
+  if (!history.location.state || !history.location.state.valid)
+    return <Redirect to="/forgot-password" />;
 
   return (
     <div className={styles.container}>
