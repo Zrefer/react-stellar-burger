@@ -6,15 +6,23 @@ import {
 import styles from "./login.module.css";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useProvideAuth } from "../../hooks/useProvideAuth";
+import { useHistory } from "react-router-dom";
 
 export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({});
+  const { requestSended, login } = useProvideAuth();
+  const history = useHistory();
 
   const onPasswordShowClick = () => setShowPassword(!showPassword);
-
   const onInputChange = (evt) => {
     setForm({ ...form, [evt.target.name]: evt.target.value });
+  };
+
+  const onLoginClick = () => {
+    if (requestSended) return;
+    login(form).then(() => history.replace("/"));
   };
 
   return (
@@ -36,7 +44,12 @@ export function LoginPage() {
           name="password"
           value={form.password ? form.password : ""}
         />
-        <Button type="primary" size="medium" htmlType="button">
+        <Button
+          type="primary"
+          size="medium"
+          htmlType="button"
+          onClick={onLoginClick}
+        >
           Войти
         </Button>
       </form>

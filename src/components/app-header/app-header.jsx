@@ -4,9 +4,11 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./app-header.module.css";
 import HeaderMenu from "../header-menu/header-menu";
-import NavLink from "../nav-link/nav-link";
+import HeaderLink from "../header-link/header-link";
+import { useRouteMatch } from "react-router-dom";
 
 function AppHeader() {
+  const profileMatch = useRouteMatch("/profile");
   return (
     <header className={styles.header}>
       <div className={`mt-4 mb-4 ${styles.content}`}>
@@ -15,10 +17,10 @@ function AppHeader() {
           <Logo />
         </div>
         <div className={styles.account}>
-          <NavLink>
-            <ProfileIcon type="secondary" />
+          <HeaderLink to="/profile">
+            <ProfileIcon type={profileMatch ? "primary" : "secondary"} />
             Личный кабинет
-          </NavLink>
+          </HeaderLink>
         </div>
       </div>
     </header>

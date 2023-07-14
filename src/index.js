@@ -9,6 +9,7 @@ import { ingredientsSlice } from "./services/ingredients/slices";
 import { ingDetailsSlice } from "./services/ingredient-details/slices";
 import { orderSlice } from "./services/order/slices";
 import { Provider } from "react-redux";
+import { userSlice } from "./services/user/slices";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     constructor: constructorSlice.reducer,
     ingDetails: ingDetailsSlice.reducer,
     orderDetails: orderSlice.reducer,
+    user: userSlice.reducer,
   },
   devTools: process.env.NODE_ENV !== "production",
   preloadedState: {
@@ -23,6 +25,7 @@ const store = configureStore({
     constructor: constructorSlice.getInitialState(),
     ingDetails: ingDetailsSlice.getInitialState(),
     orderDetails: orderSlice.getInitialState(),
+    user: userSlice.getInitialState(),
   },
 });
 

@@ -1,20 +1,27 @@
 import styles from "./register.module.css";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import {
   Button,
   EmailInput,
   Input,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+import { useProvideAuth } from "../../hooks/useProvideAuth";
 
 export function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({});
+  const { requestSended, register } = useProvideAuth();
+  const history = useHistory();
 
   const onPasswordShowClick = () => setShowPassword(!showPassword);
-
   const onInputChange = (evt) => {
     setForm({ ...form, [evt.target.name]: evt.target.value });
+  };
+
+  const onRegisterClick = () => {
+    if (requestSended) return;
+    register(form).then(() => history.replace("/"));
   };
 
   return (
@@ -43,7 +50,12 @@ export function RegisterPage() {
           name="password"
           value={form.password ? form.password : ""}
         />
-        <Button type="primary" size="medium" htmlType="button">
+        <Button
+          type="primary"
+          size="medium"
+          htmlType="button"
+          onClick={onRegisterClick}
+        >
           Зарегистрироваться
         </Button>
       </form>

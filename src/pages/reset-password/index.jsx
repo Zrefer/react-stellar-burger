@@ -5,15 +5,26 @@ import {
 import styles from "./reset-password.module.css";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useProvideAuth } from "../../hooks/useProvideAuth";
+import { useHistory } from "react-router-dom";
 
 export function ResetPasswordPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({});
+  const { requestSended, resetPassword } = useProvideAuth();
+  const history = useHistory();
 
   const onPasswordShowClick = () => setShowPassword(!showPassword);
-
   const onInputChange = (evt) => {
     setForm({ ...form, [evt.target.name]: evt.target.value });
+  };
+
+  const onResetClick = () => {
+    if (requestSended) return;
+    resetPassword(form).then(() => {
+      sessionStorage.removeItem("forgot-password-process");
+      history.replace("/login");
+    });
   };
 
   return (
@@ -36,7 +47,12 @@ export function ResetPasswordPage() {
           name="token"
           onChange={onInputChange}
         />
-        <Button type="primary" size="medium" htmlType="button">
+        <Button
+          type="primary"
+          size="medium"
+          htmlType="button"
+          onClick={onResetClick}
+        >
           Войти
         </Button>
       </form>

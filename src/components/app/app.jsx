@@ -15,6 +15,7 @@ import { RegisterPage } from "../../pages/register";
 import { ForgotPasswordPage } from "../../pages/forgot-password";
 import { ResetPasswordPage } from "../../pages/reset-password";
 import { ProfilePage } from "../../pages/profile";
+import { ProtectedRouteElement } from "../protected-route-element/protected-route-element";
 
 function App() {
   const dispatch = useDispatch();
@@ -39,39 +40,47 @@ function App() {
 
   if (items.length > 0) {
     return (
-      <>
+      <BrowserRouter>
         <AppHeader />
         <AppContent>
-          <BrowserRouter>
-            <Switch>
-              <Route path="/" exact>
-                <DndProvider backend={HTML5Backend}>
-                  <BurgerIngredients />
-                  <BurgerConstructor />
-                </DndProvider>
-              </Route>
-              <Route path="/login" exact>
+          <Switch>
+            <Route path="/" exact>
+              <DndProvider backend={HTML5Backend}>
+                <BurgerIngredients />
+                <BurgerConstructor />
+              </DndProvider>
+            </Route>
+            <Route path="/login" exact>
+              <ProtectedRouteElement reverse>
                 <LoginPage />
-              </Route>
-              <Route path="/register" exact>
+              </ProtectedRouteElement>
+            </Route>
+            <Route path="/register" exact>
+              <ProtectedRouteElement reverse>
                 <RegisterPage />
-              </Route>
-              <Route path="/forgot-password" exact>
+              </ProtectedRouteElement>
+            </Route>
+            <Route path="/forgot-password" exact>
+              <ProtectedRouteElement reverse>
                 <ForgotPasswordPage />
-              </Route>
-              <Route path="/reset-password" exact>
+              </ProtectedRouteElement>
+            </Route>
+            <Route path="/reset-password" exact>
+              <ProtectedRouteElement reverse>
                 <ResetPasswordPage />
-              </Route>
-              <Route path="/profile" exact>
+              </ProtectedRouteElement>
+            </Route>
+            <Route path="/profile" exact>
+              <ProtectedRouteElement>
                 <ProfilePage />
-              </Route>
-              <Route path="*">
-                <NotFound404 />
-              </Route>
-            </Switch>
-          </BrowserRouter>
+              </ProtectedRouteElement>
+            </Route>
+            <Route path="*">
+              <NotFound404 />
+            </Route>
+          </Switch>
         </AppContent>
-      </>
+      </BrowserRouter>
     );
   }
 

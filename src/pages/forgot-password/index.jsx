@@ -4,14 +4,25 @@ import { Link } from "react-router-dom";
 import {
   Button,
   EmailInput,
-  Input,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+import { useProvideAuth } from "../../hooks/useProvideAuth";
+import { useHistory } from "react-router-dom";
 
 export function ForgotPasswordPage() {
   const [form, setForm] = useState({});
+  const { requestSended, forgotPassword } = useProvideAuth();
+  const history = useHistory();
 
   const onInputChange = (evt) => {
     setForm({ ...form, [evt.target.name]: evt.target.value });
+  };
+
+  const onResetClick = () => {
+    if (requestSended) return;
+    forgotPassword(form).then(() => {
+      sessionStorage.setItem("forgot-password-process", true);
+      history.replace("/reset-password");
+    });
   };
 
   return (
@@ -24,7 +35,12 @@ export function ForgotPasswordPage() {
           name="email"
           onChange={onInputChange}
         />
-        <Button type="primary" size="medium" htmlType="button">
+        <Button
+          type="primary"
+          size="medium"
+          htmlType="button"
+          onClick={onResetClick}
+        >
           Восстановить
         </Button>
       </form>

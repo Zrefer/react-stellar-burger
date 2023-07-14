@@ -2,24 +2,31 @@ import {
   BurgerIcon,
   ListIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import NavLink from "../nav-link/nav-link";
+import HeaderLink from "../header-link/header-link";
 import styles from "./header-menu.module.css";
+import { useRouteMatch } from "react-router-dom";
 
 function HeaderMenu() {
+  const ctorMatch = useRouteMatch({
+    path: "/",
+    exact: true,
+  });
+  const feedMatch = useRouteMatch("/feed");
+
   return (
     <nav>
       <ul className={styles.menu}>
         <li className={`mr-2 ${styles.menu__item}`}>
-          <NavLink active={true}>
-            <BurgerIcon type="primary" />
+          <HeaderLink to="/" exact>
+            <BurgerIcon type={ctorMatch ? "primary" : "secondary"} />
             Конструктор
-          </NavLink>
+          </HeaderLink>
         </li>
         <li className={styles.menu__item}>
-          <NavLink>
-            <ListIcon type="secondary" />
+          <HeaderLink to="/feed">
+            <ListIcon type={feedMatch ? "primary" : "secondary"} />
             Лента заказов
-          </NavLink>
+          </HeaderLink>
         </li>
       </ul>
     </nav>

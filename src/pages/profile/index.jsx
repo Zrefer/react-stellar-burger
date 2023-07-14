@@ -5,29 +5,41 @@ import {
   Input,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useState, useRef } from "react";
+import { useProvideAuth } from "../../hooks/useProvideAuth";
+import { useHistory } from "react-router-dom";
 
 export function ProfilePage() {
-  const [form, setForm] = useState({});
+  const { user, requestSended, logout } = useProvideAuth();
+  const [form, setForm] = useState({
+    email: user.email,
+    name: user.name,
+  });
   const [editable, setEditable] = useState();
   const nameInputRef = useRef(null);
   const passwordInputRef = useRef(null);
+  const history = useHistory();
 
   const onInputChange = (evt) => {
     setForm({ ...form, [evt.target.name]: evt.target.value });
   };
 
-  const onNameIconClick = (evt) => {
+  const onNameIconClick = () => {
     setEditable(nameInputRef.current.name);
     setTimeout(() => nameInputRef.current.focus(), 0);
   };
 
-  const onPasswordIconClick = (evt) => {
+  const onPasswordIconClick = () => {
     setEditable(passwordInputRef.current.name);
     setTimeout(() => passwordInputRef.current.focus(), 0);
   };
 
-  const onInputBlur = (evt) => {
+  const onInputBlur = () => {
     setEditable();
+  };
+
+  const onLogoutClick = () => {
+    if (requestSended) return;
+    logout().then(() => history.replace("/"));
   };
 
   return (
@@ -64,6 +76,7 @@ export function ProfilePage() {
             <button
               type="button"
               className={`text text_type_main-medium text_color_inactive ${styles.link}`}
+              onClick={onLogoutClick}
             >
               Выход
             </button>
