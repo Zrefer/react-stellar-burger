@@ -1,5 +1,6 @@
 import {
   Button,
+  EmailInput,
   Input,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./login.module.css";
@@ -20,8 +21,7 @@ export function LoginPage() {
     <div className={styles.container}>
       <form className={styles.form}>
         <h2 className="text text_type_main-medium">Вход</h2>
-        <Input
-          type="email"
+        <EmailInput
           placeholder="E-mail"
           value={form.email ? form.email : ""}
           name="email"

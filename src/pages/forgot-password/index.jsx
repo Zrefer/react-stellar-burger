@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Button,
+  EmailInput,
   Input,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
@@ -17,8 +18,7 @@ export function ForgotPasswordPage() {
     <div className={styles.container}>
       <form className={styles.form}>
         <h2 className="text text_type_main-medium">Восстановление пароля</h2>
-        <Input
-          type="email"
+        <EmailInput
           placeholder="Укажите e-mail"
           value={form.email ? form.email : ""}
           name="email"

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Button,
+  EmailInput,
   Input,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
@@ -27,8 +28,7 @@ export function RegisterPage() {
           name="name"
           onChange={onInputChange}
         />
-        <Input
-          type="email"
+        <EmailInput
           placeholder="E-mail"
           value={form.email ? form.email : ""}
           name="email"

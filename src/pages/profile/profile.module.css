@@ -1,0 +1,35 @@
+.container {
+    display: flex;
+    gap: 60px;
+}
+
+.navList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navItem {
+    align-items: center;
+    display: flex;
+    height: 64px;
+}
+
+.link {
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.navInfo {
+    margin-top: 80px;
+    opacity: 0.4;
+    width: 320px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
